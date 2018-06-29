@@ -30,14 +30,16 @@ class tachyon (
     owner  => 'vagrant',
   } ->
   exec { '/usr/bin/npm install aws-sdk':
-    cwd         => '/opt/tachyon',
+    cwd     => '/opt/tachyon',
     user    => 'vagrant',
-    require     => Package['nodejs'],
+    unless  => '/usr/bin/test -d /opt/tachyon/node_modules/aws-sdk',
+    require => Package['nodejs'],
   } ->
   exec { '/usr/bin/npm install humanmade/tachyon':
-    cwd         => '/opt/tachyon',
-    user        => 'vagrant',
-    require     => Package['nodejs'],
+    cwd     => '/opt/tachyon',
+    user    => 'vagrant',
+    unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
+    require => Package['nodejs'],
   } ->
   service { 'tachyon':
     ensure   => $service,
