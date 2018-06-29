@@ -13,11 +13,11 @@ class tachyon (
 
   # Allow disabling the extension
   if ( !empty($config[disabled_extensions]) and 'chassis/tachyon' in $config[disabled_extensions] ) {
-    $package = 'absent'
-    $service = 'stopped'
+    $package = absent
+    $service = stopped
   } else {
-    $package = 'present'
-    $service = 'running'
+    $package = present
+    $service = running
   }
 
   # Get template vars
@@ -39,13 +39,14 @@ class tachyon (
     cwd     => '/opt/tachyon',
     user    => 'vagrant',
     unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
-  } ->
+  } ~>
   service { 'tachyon':
     ensure   => $service,
+    hasstatus   => true,
     provider => 'base',
     start    => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
-    stop     => '/bin/kill -9 $(ps -ef | grep [t]achyon | awk \'{print $2}\')',
-    status   => "ps -ef | grep [t]achyon",
+    stop     => 'kill -9 $(ps -ef | grep [t]achyon/node_modules | awk \'{print $2}\')',
+    status   => "ps -ef | grep [t]achyon/node_modules",
   }
 
   # Configure nginx
@@ -53,7 +54,6 @@ class tachyon (
     ensure  => $package,
     content => template('tachyon/nginx.conf.erb'),
     notify  => Service['nginx'],
-    require => Service['tachyon'],
   }
 
 }
