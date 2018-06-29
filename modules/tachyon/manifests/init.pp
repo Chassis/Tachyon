@@ -39,14 +39,13 @@ class tachyon (
     cwd     => '/opt/tachyon',
     user    => 'vagrant',
     unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
-    require => Package['nodejs'],
   } ->
   service { 'tachyon':
     ensure   => $service,
     provider => 'base',
     start    => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
-    stop     => 'killall -9 tachyon',
-    status   => "ps -ef | grep '\\/opt\\/tachyon'",
+    stop     => '/bin/kill -9 $(ps -ef | grep [t]achyon | awk \'{print $2}\')',
+    status   => "ps -ef | grep [t]achyon",
   }
 
   # Configure nginx
@@ -54,6 +53,7 @@ class tachyon (
     ensure  => $package,
     content => template('tachyon/nginx.conf.erb'),
     notify  => Service['nginx'],
+    require => Service['tachyon'],
   }
 
 }
