@@ -21,7 +21,7 @@ class tachyon (
 	}
 
 	# Get template vars
-	$port = $options[port]
+	$port    = $options[port]
 	$content = $config[mapped_paths][content]
 
 	# Install and start.
@@ -36,17 +36,17 @@ class tachyon (
 	require => Package['nodejs'],
 	}
 	-> exec { '/usr/bin/npm install humanmade/tachyon':
-		cwd     => '/opt/tachyon',
-		user    => 'vagrant',
-		unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
+		cwd    => '/opt/tachyon',
+		user   => 'vagrant',
+		unless => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
 	}
 	~> service { 'tachyon':
-		ensure   => $service,
+		ensure    => $service,
 		hasstatus => true,
-		provider => 'base',
-		start    => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
-		stop     => 'kill -9 $(ps -ef | grep [t]achyon/node_modules | awk \'{print $2}\')',
-		status   => "ps -ef | grep [t]achyon/node_modules",
+		provider  => 'base',
+		start     => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
+		stop      => 'kill -9 $(ps -ef | grep [t]achyon/node_modules | awk \'{print $2}\')',
+		status    => "ps -ef | grep [t]achyon/node_modules",
 	}
 
 	# Configure nginx
