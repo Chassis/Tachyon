@@ -46,7 +46,7 @@ class tachyon (
 		provider  => 'base',
 		start     => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
 		stop      => 'kill -9 $(ps -ef | grep [t]achyon/node_modules | awk \'{print $2}\')',
-		status    => "ps -ef | grep [t]achyon/node_modules",
+		status    => 'ps -ef | grep [t]achyon/node_modules',
 	}
 
 	# Configure nginx
