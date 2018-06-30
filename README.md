@@ -13,7 +13,6 @@ Via Chassis config:
 
 ```
 extensions:
-  - chassis/nodejs
   - chassis/tachyon
 ```
 
