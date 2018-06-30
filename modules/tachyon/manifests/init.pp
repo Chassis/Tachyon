@@ -28,19 +28,19 @@ class tachyon (
   file { '/opt/tachyon':
     ensure => 'directory',
     owner  => 'vagrant',
-  } ->
-  exec { '/usr/bin/npm install aws-sdk':
+  }
+  -> exec { '/usr/bin/npm install aws-sdk':
     cwd     => '/opt/tachyon',
     user    => 'vagrant',
     unless  => '/usr/bin/test -d /opt/tachyon/node_modules/aws-sdk',
     require => Package['nodejs'],
-  } ->
-  exec { '/usr/bin/npm install humanmade/tachyon':
+  }
+  -> exec { '/usr/bin/npm install humanmade/tachyon':
     cwd     => '/opt/tachyon',
     user    => 'vagrant',
     unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
-  } ~>
-  service { 'tachyon':
+  }
+  ~> service { 'tachyon':
     ensure   => $service,
     hasstatus   => true,
     provider => 'base',
