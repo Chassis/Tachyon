@@ -30,23 +30,23 @@ class tachyon (
     owner  => 'vagrant',
   } ->
   exec { '/usr/bin/npm install aws-sdk':
-    cwd     => '/opt/tachyon',
+    cwd     => '/vagrant/extensions/tachyon/server',
     user    => 'vagrant',
     unless  => '/usr/bin/test -d /opt/tachyon/node_modules/aws-sdk',
     require => Package['nodejs'],
   } ->
-  exec { '/usr/bin/npm install humanmade/tachyon':
-    cwd     => '/opt/tachyon',
+  exec { '/usr/bin/npm install':
+    cwd     => '/vagrant/extensions/tachyon/server',
     user    => 'vagrant',
-    unless  => '/usr/bin/test -d /opt/tachyon/node_modules/node-tachyon',
+    unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/sharp',
   } ~>
   service { 'tachyon':
-    ensure   => $service,
-    hasstatus   => true,
-    provider => 'base',
-    start    => "cd ${content} && /usr/bin/node /opt/tachyon/node_modules/node-tachyon/local-server.js ${port} &>/dev/null &",
-    stop     => 'kill -9 $(ps -ef | grep [t]achyon/node_modules | awk \'{print $2}\')',
-    status   => "ps -ef | grep [t]achyon/node_modules",
+    ensure    => $service,
+    hasstatus => true,
+    provider  => 'base',
+    start     => "cd ${content} && /usr/bin/node /vagrant/extensions/tachyon/server/local-server.js ${port} &>/dev/null &",
+    stop      => 'kill -9 $(ps -ef | grep [t]achyon/server | awk \'{print $2}\')',
+    status    => "ps -ef | grep [t]achyon/server",
   }
 
   # Configure nginx
