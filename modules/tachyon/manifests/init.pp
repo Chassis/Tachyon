@@ -26,21 +26,25 @@ class tachyon (
 	$content = $config[mapped_paths][content]
 
 	# Install and start.
-	file { '/opt/tachyon':
-		ensure => 'directory',
-		owner  => 'vagrant',
-	} ->
-	exec { '/usr/bin/npm install aws-sdk':
+	exec { 'tachyon install aws-sdk':
+		command => '/usr/bin/npm install aws-sdk',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
 		unless  => '/usr/bin/test -d /opt/tachyon/node_modules/aws-sdk',
 		require => Package['nodejs'],
-	} ->
-	exec { '/usr/bin/npm install':
+	}
+
+	exec { 'tachyon install':
+		command => '/usr/bin/npm install',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
 		unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/sharp',
-	} ~>
+		require => [
+			Package['nodejs'],
+			Exec['tachyon install aws-sdk'],
+		],
+	}
+
 	service { 'tachyon':
 		ensure    => $service,
 		hasstatus => true,
@@ -48,6 +52,7 @@ class tachyon (
 		start     => "cd ${content} && /usr/bin/node /vagrant/extensions/tachyon/server/local-server.js ${port} &>/dev/null &",
 		stop      => '/bin/kill -9 $(ps -ef | grep [t]achyon/server | awk \'{print $2}\')',
 		status    => "/bin/ps -ef | grep [t]achyon/server",
+		require   => Exec['tachyon install']
 	}
 
 	# Configure nginx
