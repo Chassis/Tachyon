@@ -16,21 +16,23 @@ class tachyon (
 	if ( !empty($config[disabled_extensions]) and 'chassis/tachyon' in $config[disabled_extensions] ) {
 		$package = absent
 		$service = stopped
+		$active  = false
 	} else {
 		$package = present
 		$service = running
+		$active  = true
 	}
 
 	# Get template vars
 	$port    = $options[port]
 	$content = $config[mapped_paths][content]
 
-	# Install and start.
+	# Install and start
 	exec { 'tachyon install aws-sdk':
 		command => '/usr/bin/npm install aws-sdk',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
-		unless  => '/usr/bin/test -d /opt/tachyon/node_modules/aws-sdk',
+		unless  => '/usr/bin/test -d /vagrant/extenstions/tachyon/server/node_modules/aws-sdk',
 		require => Package['nodejs'],
 	}
 
@@ -45,13 +47,19 @@ class tachyon (
 		],
 	}
 
+  # Create service file
+	file { '/lib/systemd/system/tachyon.service':
+		ensure  => $file,
+		content => template('tachyon/systemd.service.erb'),
+	}
+
+	File['/lib/systemd/system/tachyon.service'] -> Service['tachyon']
+
 	service { 'tachyon':
 		ensure    => $service,
-		hasstatus => true,
-		provider  => 'base',
-		start     => "cd ${content} && /usr/bin/node /vagrant/extensions/tachyon/server/local-server.js ${port} &>/dev/null &",
-		stop      => '/bin/kill -9 $(ps -ef | grep [t]achyon/server | awk \'{print $2}\')',
-		status    => "/bin/ps -ef | grep [t]achyon/server",
+		enable    => $active,
+		restart   => $active,
+		hasstatus => $active,
 		require   => Exec['tachyon install']
 	}
 

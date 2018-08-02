@@ -1,0 +1,14 @@
+[Unit]
+Description=Tachyon
+
+[Service]
+TimeoutStartSec=0
+TimeoutStopSec=600
+Restart=on-failure
+RestartSec=30s
+WorkingDirectory=<%= @content %>
+User=www-data
+ExecStart=/usr/bin/node /vagrant/extensions/tachyon/server/local-server.js <%= @port %>
+
+[Install]
+WantedBy=multi-user.target
