@@ -60,14 +60,14 @@ class tachyon (
 		enable    => $active,
 		restart   => $active,
 		hasstatus => $active,
-		require   => Exec['tachyon install']
+		require   => Exec['tachyon install'],
 	}
 
 	# Configure nginx
 	if ( ! defined( File["/etc/nginx/sites-available/${fqdn}.d"] ) ) {
-		file { "/etc/nginx/sites-available/${fqdn}.d":
+		file{ "/etc/nginx/sites-available/${fqdn}.d/":
 			ensure  => directory,
-			require => Package['nginx']
+			require => Package['nginx'],
 		}
 	}
 
