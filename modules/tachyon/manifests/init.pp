@@ -32,7 +32,7 @@ class tachyon (
 		command => '/usr/bin/npm install aws-sdk',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
-		unless  => '/usr/bin/test -d /vagrant/extenstions/tachyon/server/node_modules/aws-sdk',
+		unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/aws-sdk',
 		require => Package['nodejs'],
 	}
 
@@ -64,6 +64,13 @@ class tachyon (
 	}
 
 	# Configure nginx
+	if ( ! defined( File["/etc/nginx/sites-available/${fqdn}.d"] ) ) {
+		file { "/etc/nginx/sites-available/${fqdn}.d":
+			ensure  => directory,
+			require => Package['nginx']
+		}
+	}
+
 	file { "/etc/nginx/sites-available/${fqdn}.d/tachyon.nginx.conf":
 		ensure  => $package,
 		content => template('tachyon/nginx.conf.erb'),
