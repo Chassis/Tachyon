@@ -60,6 +60,7 @@ class tachyon (
 		ensure  => $package,
 		content => template('tachyon/nginx.conf.erb'),
 		notify  => Service['nginx'],
+		require => File["/etc/nginx/sites-available/${fqdn}.d"],
 	}
 
 }
