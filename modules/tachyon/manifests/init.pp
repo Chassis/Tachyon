@@ -56,9 +56,11 @@ class tachyon (
 	}
 
 	# Configure nginx
-	file{ "/etc/nginx/sites-available/${fqdn}.d/":
-		ensure  => directory,
-		mode    => 0755,
+	if ( ! defined( File["/etc/nginx/sites-available/${fqdn}.d"] ) ) {
+		file{ "/etc/nginx/sites-available/${fqdn}.d/":
+			ensure  => directory,
+			require => Package['nginx'],
+		}
 	}
 
 	file { "/etc/nginx/sites-available/${fqdn}.d/tachyon.nginx.conf":
