@@ -64,13 +64,6 @@ class tachyon (
 	}
 
 	# Configure nginx
-	if ( ! defined( File["/etc/nginx/sites-available/${fqdn}.d"] ) ) {
-		file{ "/etc/nginx/sites-available/${fqdn}.d/":
-			ensure  => directory,
-			require => Package['nginx'],
-		}
-	}
-
 	file { "/etc/nginx/sites-available/${fqdn}.d/tachyon.nginx.conf":
 		ensure  => $package,
 		content => template('tachyon/nginx.conf.erb'),
