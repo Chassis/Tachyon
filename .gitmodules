@@ -1,3 +1,4 @@
 [submodule "server"]
 	path = server
 	url = https://github.com/humanmade/tachyon.git
+	ignore = dirty

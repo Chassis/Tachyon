@@ -4,8 +4,8 @@ Description=Tachyon
 [Service]
 TimeoutStartSec=0
 TimeoutStopSec=600
-Restart=on-failure
-RestartSec=30s
+Restart=always
+RestartSec=1s
 WorkingDirectory=<%= @content %>
 User=www-data
 ExecStart=/usr/bin/node /vagrant/extensions/tachyon/server/local-server.js <%= @port %>
