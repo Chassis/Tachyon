@@ -47,10 +47,20 @@ class tachyon (
 		],
 	}
 
+	exec { 'systemctl enable tachyon':
+		command     => '/bin/systemctl enable tachyon',
+		refreshonly => true,
+	}
+
   # Create service file
 	file { '/lib/systemd/system/tachyon.service':
 		ensure  => $file,
+		mode    => '0644',
 		content => template('tachyon/systemd.service.erb'),
+		notify  => [
+			Exec['systemctl-daemon-reload'],
+			Exec['systemctl enable tachyon'],
+		],
 	}
 
 	File['/lib/systemd/system/tachyon.service'] -> Service['tachyon']
