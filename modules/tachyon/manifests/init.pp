@@ -54,7 +54,7 @@ class tachyon (
 
   # Create service file
 	file { '/lib/systemd/system/tachyon.service':
-		ensure  => $file,
+		ensure  => file,
 		mode    => '0644',
 		content => template('tachyon/systemd.service.erb'),
 		notify  => [
