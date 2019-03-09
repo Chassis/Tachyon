@@ -54,7 +54,7 @@ class tachyon (
 
   # Create service file
 	file { '/lib/systemd/system/tachyon.service':
-		ensure  => $file,
+		ensure  => file,
 		mode    => '0644',
 		content => template('tachyon/systemd.service.erb'),
 		notify  => [
@@ -74,7 +74,7 @@ class tachyon (
 	}
 
 	# Configure nginx
-	file { "/etc/nginx/sites-available/${::fqdn}.d/tachyon.nginx.conf":
+	file { "/etc/nginx/sites-available/${fqdn}.d/tachyon.nginx.conf":
 		ensure  => $package,
 		content => template('tachyon/nginx.conf.erb'),
 		notify  => Service['nginx'],
