@@ -29,7 +29,7 @@ class tachyon (
 
 	# Install and start
 	exec { 'tachyon install aws-sdk':
-		command => '/usr/bin/npm install aws-sdk',
+		command => '/usr/bin/yarn add aws-sdk',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
 		unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/aws-sdk',
@@ -37,7 +37,7 @@ class tachyon (
 	}
 
 	exec { 'tachyon install':
-		command => '/usr/bin/npm install',
+		command => '/usr/bin/yarn',
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
 		unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/sharp',
