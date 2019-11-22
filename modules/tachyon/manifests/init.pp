@@ -33,7 +33,10 @@ class tachyon (
 		cwd     => '/vagrant/extensions/tachyon/server',
 		user    => 'vagrant',
 		unless  => '/usr/bin/test -d /vagrant/extensions/tachyon/server/node_modules/aws-sdk',
-		require => Package['nodejs'],
+		require => [
+			Package['nodejs'],
+			Exec['install yarn'],
+		],
 	}
 
 	exec { 'tachyon install':
