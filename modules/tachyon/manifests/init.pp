@@ -2,11 +2,19 @@
 class tachyon (
   $config,
   $fqdn = $::fqdn,
+  $php  = $config[php]
 ) {
 
 	# Default settings for install
 	$defaults = {
 		'port'  => 8082,
+	}
+
+	if versioncmp($php, '5.4') <= 0 {
+		$php_package = 'php5'
+	}
+	else {
+		$php_package = "php${php}"
 	}
 
 	# Allow override from config.yaml
@@ -26,6 +34,16 @@ class tachyon (
 	# Get template vars
 	$port    = $options[port]
 	$content = $config[mapped_paths][content]
+
+	package { 'libpng-dev':
+		ensure  => $package,
+		require => [
+			Apt::Ppa['ppa:ondrej/php'],
+			Apt::Ppa['ppa:ondrej/php-qa'],
+			Class['apt::update'],
+		],
+		notify  => Service["${php_package}-fpm"]
+	}
 
 	# Install and start
 	exec { 'tachyon install aws-sdk':
