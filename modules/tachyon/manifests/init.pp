@@ -1,7 +1,6 @@
 # A Chassis extension to install and run tachyon
 class tachyon (
   $config,
-  $fqdn = $::fqdn,
   $php  = $config[php]
 ) {
 
@@ -95,11 +94,11 @@ class tachyon (
 	}
 
 	# Configure nginx
-	file { "/etc/nginx/sites-available/${fqdn}.d/tachyon.nginx.conf":
+	file { "/etc/nginx/sites-available/${facts['networking']['fqdn']}.d/tachyon.nginx.conf":
 		ensure  => $package,
 		content => template('tachyon/nginx.conf.erb'),
 		notify  => Service['nginx'],
-		require => File["/etc/nginx/sites-available/${fqdn}.d"],
+		require => File["/etc/nginx/sites-available/${facts['networking']['fqdn']}.d"],
 	}
 
 }
